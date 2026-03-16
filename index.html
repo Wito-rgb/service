@@ -1432,7 +1432,8 @@
       <div class="topbar-dot"></div>
       <span>SISTEMA EN LÍNEA — Mesa de Servicio IT</span>
       <span style="color:var(--muted-2)">|</span>
-      <span>Soporte: <strong style="color:#e0ddd6">ramirze89@gmail.com</strong></span>
+      <span>Soporte: <strong style="color:#e0ddd6"><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
+            data-cfemail="95e7f4f8fce7eff0adacd5f2f8f4fcf9bbf6faf8">[email&#160;protected]</a></strong></span>
     </div>
     <div class="topbar-right">
       <span>📍 El Salvador</span>
@@ -1663,7 +1664,7 @@
             <th>Fecha</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="ticketsTbody">
           <tr>
             <td class="tid">TKT-0047</td>
             <td>VPN no conecta desde oficina</td>
@@ -1733,11 +1734,11 @@
     <div class="form-section" id="nuevo">
       <div class="form-top">
         <span class="form-top-title">📬 Nuevo Ticket de Soporte</span>
-        <span class="form-top-id">ramirze89@gmail.com</span>
+        <span class="form-top-id"><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
+            data-cfemail="9deffcf0f4efe7f8a5a4ddfaf0fcf4f1b3fef2f0">[email&#160;protected]</a></span>
       </div>
 
-      <!-- ACTION = mailto: envío funcional sin JS -->
-      <form method="get" action="mailto:ramirze89@gmail.com" enctype="text/plain">
+      <form id="ticketForm" novalidate>
 
         <div class="f-row f-2col">
           <div class="f-group">
@@ -1831,7 +1832,8 @@
         <div class="submit-row">
           <div class="submit-info">
             Al enviar, se abrirá tu cliente de correo<br />
-            con el ticket dirigido a <strong>ramirze89@gmail.com</strong>
+            con el ticket dirigido a <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
+                data-cfemail="186a7975716a627d2021587f75797174367b7775">[email&#160;protected]</a></strong>
           </div>
           <button type="submit" class="btn-send">
             Enviar Ticket
@@ -1847,11 +1849,12 @@
 
       <div class="side-card">
         <div class="side-title">📬 Contacto Directo</div>
-        <a href="mailto:ramirze89@gmail.com" class="contact-item">
+        <a href="/cdn-cgi/l/email-protection#740615191d060e114c4d341319151d185a171b19" class="contact-item">
           <div class="ci-icon ci-email">✉️</div>
           <div>
             <div class="ci-label">Email soporte</div>
-            <div class="ci-value">ramirze89@gmail.com</div>
+            <div class="ci-value"><span class="__cf_email__"
+                data-cfemail="4230232f2b3038277a7b02252f232b2e6c212d2f">[email&#160;protected]</span></div>
           </div>
         </a>
         <a href="https://wa.me/50370687308" target="_blank" class="contact-item">
@@ -1951,17 +1954,135 @@
         href="https://wa.me/50370687308">+503 7068-7308</a></span>
   </footer>
 
-  <!-- Reloj simple — único JS en toda la página (inline, mínimo) -->
   <script>
     (function () {
-      var c = document.getElementById('clock');
-      if (c) {
-        function t() { var d = new Date(); c.textContent = d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0'); }
-        t(); setInterval(t, 30000);
+      /* ── Reloj ── */
+      var clk = document.getElementById('clock');
+      function updateClock() { if (clk) { var d = new Date(); clk.textContent = d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0'); } }
+      updateClock(); setInterval(updateClock, 30000);
+
+      /* ── Contador ── */
+      var ticketCounter = 48;
+
+      /* ── Mapa prioridad ── */
+      var prioMap = {
+        'Baja': { dot: 'pd-baja' }, 'Media': { dot: 'pd-med' },
+        'Alta': { dot: 'pd-alta' }, 'Critica': { dot: 'pd-crit' }
+      };
+
+      /* ── Chip contador abiertos ── */
+      var chipOpen = document.querySelector('.chip.open');
+      var openCount = 12;
+
+      /* ── Toast ── */
+      var toast = document.createElement('div');
+      toast.style.cssText = 'position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;background:#0d9488;color:#fff;font-family:Outfit,sans-serif;font-size:.85rem;font-weight:600;padding:.75rem 1.3rem;border-radius:6px;box-shadow:0 4px 20px rgba(0,0,0,.2);transform:translateY(80px);opacity:0;transition:all .35s cubic-bezier(.4,0,.2,1);pointer-events:none;max-width:320px';
+      document.body.appendChild(toast);
+      function showToast(msg) {
+        toast.textContent = msg;
+        toast.style.transform = 'translateY(0)'; toast.style.opacity = '1';
+        setTimeout(function () { toast.style.transform = 'translateY(80px)'; toast.style.opacity = '0'; }, 3500);
       }
+
+      /* ── Fecha ── */
+      function nowStr() {
+        var d = new Date();
+        return d.getDate().toString().padStart(2, '0') + '/' + (d.getMonth() + 1).toString().padStart(2, '0') + '/' + d.getFullYear().toString().slice(2) + ' ' + d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+      }
+
+      /* ── Escape HTML ── */
+      function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+      /* ── Agregar fila ── */
+      function addRow(data) {
+        var tbody = document.getElementById('ticketsTbody');
+        if (!tbody) return;
+        var prio = prioMap[data.prioridad] || prioMap['Baja'];
+        var label = data.prioridad === 'Critica' ? 'Crítica' : data.prioridad;
+        var tr = document.createElement('tr');
+        tr.style.animation = 'fadeUp .4s ease both';
+        tr.style.background = 'rgba(13,148,136,.04)';
+        tr.innerHTML = '<td class="tid">TKT-00' + data.id + '</td>' +
+          '<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(data.asunto) + '</td>' +
+          '<td>' + esc(data.nombre) + '</td>' +
+          '<td>' + esc(data.categoria || '—') + '</td>' +
+          '<td><span class="prio-dot ' + prio.dot + '"></span>' + label + '</td>' +
+          '<td><span class="status-pill sp-open">Abierto</span></td>' +
+          '<td>—</td>' +
+          '<td class="mono" style="font-size:.7rem;color:var(--muted)">' + nowStr() + '</td>';
+        tbody.insertBefore(tr, tbody.firstChild);
+        openCount++;
+        if (chipOpen) chipOpen.textContent = openCount + ' Abiertos';
+      }
+
+      /* ── Submit ── */
+      var form = document.getElementById('ticketForm');
+      if (!form) return;
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        /* Validar */
+        var ok = true;
+        ['nombre', 'correo', 'depto', 'cat', 'asunto', 'desc'].forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el && !el.value.trim()) {
+            el.style.borderColor = 'var(--accent)';
+            el.style.boxShadow = '0 0 0 3px rgba(232,68,26,.12)';
+            ok = false;
+          }
+        });
+        var prio = form.querySelector('input[name="Prioridad"]:checked');
+        if (!prio) { showToast('⚠ Selecciona la prioridad del ticket'); return; }
+        if (!ok) { showToast('⚠ Completa todos los campos requeridos'); return; }
+
+        /* Datos */
+        var data = {
+          id: ticketCounter,
+          nombre: document.getElementById('nombre').value.trim(),
+          correo: document.getElementById('correo').value.trim(),
+          depto: document.getElementById('depto').value,
+          tel: document.getElementById('tel').value.trim() || 'No indicado',
+          categoria: document.getElementById('cat').value,
+          prioridad: prio.value,
+          asunto: document.getElementById('asunto').value.trim(),
+          descripcion: document.getElementById('desc').value.trim()
+        };
+        ticketCounter++;
+
+        /* Mailto */
+        var subj = encodeURIComponent('[Service Desk] TKT-00' + data.id + ' — ' + data.asunto);
+        var body = encodeURIComponent(
+          'NUEVO TICKET SERVICE DESK\n==========================\n' +
+          'ID:           TKT-00' + data.id + '\nFecha:        ' + nowStr() + '\n\n' +
+          'SOLICITANTE\n-----------\n' +
+          'Nombre:      ' + data.nombre + '\nEmail:        ' + data.correo + '\n' +
+          'Departamento:' + data.depto + '\nTeléfono:    ' + data.tel + '\n\n' +
+          'TICKET\n------\n' +
+          'Categoría:   ' + data.categoria + '\nPrioridad:   ' + data.prioridad + '\n' +
+          'Asunto:      ' + data.asunto + '\n\nDescripción:\n' + data.descripcion +
+          '\n\n___________________________\nEnviado desde Mesa de Servicio IT'
+        );
+        window.location.href = 'mailto:ramirze89@gmail.com?subject=' + subj + '&body=' + body;
+
+        /* Tabla + limpieza + toast + scroll */
+        addRow(data);
+        form.reset();
+        form.querySelectorAll('input,select,textarea').forEach(function (el) {
+          el.style.borderColor = ''; el.style.boxShadow = '';
+        });
+        showToast('✓ Ticket TKT-00' + data.id + ' registrado — correo abierto');
+        var tbl = document.getElementById('tickets');
+        if (tbl) tbl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+
+      /* Limpiar error al escribir */
+      form.querySelectorAll('input,select,textarea').forEach(function (el) {
+        el.addEventListener('input', function () { el.style.borderColor = ''; el.style.boxShadow = ''; });
+      });
+
     })();
   </script>
-
 </body>
 
 </html>
