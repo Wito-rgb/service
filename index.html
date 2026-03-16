@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mesa de Servicio — IT Support</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    /* ══════════════════════════════════════════════
+   VARIABLES & RESET
+══════════════════════════════════════════════ */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --ink: #0f1117;
+      --ink-2: #1e2230;
+      --ink-3: #2d3347;
+      --paper: #f5f3ef;
+      --paper-2: #eceae4;
+      --paper-3: #e0ddd6;
+      --chalk: #ffffff;
+      --accent: #e8441a;
+      --accent-2: #f07d28;
+      --teal: #0d9488;
+      --blue: #2563eb;
+      --gold: #d4a017;
+      --muted: #7a7d8a;
+      --muted-2: #a8abb8;
+      --green: #16a34a;
+      --r: 6px;
+      --shadow: 0 2px 12px rgba(15, 17, 23, .08);
+      --shadow-lg: 0 8px 32px rgba(15, 17, 23, .12);
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ══════════════════════════════════════════════
+   UTILITY
+══════════════════════════════════════════════ */
+    .mono {
+      font-family: 'DM Mono', monospace
+    }
+
+    .serif {
+      font-family: 'DM Serif Display', serif
+    }
+
+    /* ══════════════════════════════════════════════
+   TOPBAR
+══════════════════════════════════════════════ */
+    .topbar {
+      background: var(--ink);
+      color: var(--paper-3);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .55rem 2rem;
+      font-size: .7rem;
+      letter-spacing: .07em;
+      font-family: 'DM Mono', monospace;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem
+    }
+
+    .topbar-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+      animation: pulse 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .4
+      }
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      color: var(--muted-2)
+    }
+
+    /* ══════════════════════════════════════════════
+   HEADER / NAV
+══════════════════════════════════════════════ */
+    .header {
+      background: var(--chalk);
+      border-bottom: 2px solid var(--paper-3);
+      padding: .9rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--shadow);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      text-decoration: none
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .brand-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.2rem;
+      color: var(--ink);
+      letter-spacing: -.01em;
+    }
+
+    .brand-name span {
+      color: var(--accent)
+    }
+
+    .header-nav {
+      display: flex;
+      gap: .3rem;
+      flex-wrap: wrap
+    }
+
+    .nav-btn {
+      font-size: .75rem;
+      font-weight: 500;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--r);
+      padding: .35rem .85rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: .15s;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .nav-btn:hover {
+      background: var(--paper);
+      border-color: var(--paper-3);
+      color: var(--ink)
+    }
+
+    .nav-btn.active {
+      background: var(--ink);
+      color: var(--chalk)
+    }
+
+    /* ══════════════════════════════════════════════
+   HERO STRIP
+══════════════════════════════════════════════ */
+    .hero-strip {
+      background: var(--ink-2);
+      padding: 2.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-strip::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232, 68, 26, .18), transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-strip::after {
+      content: '';
+      position: absolute;
+      bottom: -40px;
+      left: 30%;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(13, 148, 136, .12), transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-text {
+      position: relative;
+      z-index: 1
+    }
+
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: .68rem;
+      color: var(--accent);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: .6rem;
+    }
+
+    .hero-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      color: var(--chalk);
+      line-height: 1.1;
+      letter-spacing: -.02em;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--accent-2);
+    }
+
+    .hero-sub {
+      margin-top: .8rem;
+      font-size: .88rem;
+      color: var(--muted-2);
+      line-height: 1.6;
+      max-width: 440px;
+    }
+
+    .hero-kpis {
+      display: flex;
+      gap: 1rem;
+      position: relative;
+      z-index: 1;
+      flex-wrap: wrap;
+    }
+
+    .kpi-card {
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: var(--r);
+      padding: 1rem 1.4rem;
+      text-align: center;
+      min-width: 90px;
+      backdrop-filter: blur(4px);
+    }
+
+    .kpi-value {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.8rem;
+      color: var(--chalk);
+      line-height: 1;
+    }
+
+    .kpi-value span {
+      font-size: 1rem;
+      color: var(--accent);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .kpi-label {
+      font-size: .65rem;
+      color: var(--muted-2);
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      margin-top: .3rem;
+    }
+
+    /* ══════════════════════════════════════════════
+   MAIN LAYOUT
+══════════════════════════════════════════════ */
+    .page-body {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    /* ══════════════════════════════════════════════
+   SECTION HEADERS
+══════════════════════════════════════════════ */
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .section-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: .65rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--chalk);
+      background: var(--ink);
+      padding: .25rem .6rem;
+      border-radius: 3px;
+    }
+
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.35rem;
+      color: var(--ink);
+      letter-spacing: -.01em;
+    }
+
+    /* ══════════════════════════════════════════════
+   DASHBOARD METRICS
+══════════════════════════════════════════════ */
+    .dashboard {
+      grid-column: 1/-1;
+      display: contents
+    }
+
+    .metrics-grid {
+      grid-column: 1/-1;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .metric-card {
+      background: var(--chalk);
+      border: 1px solid var(--paper-3);
+      border-radius: var(--r);
+      padding: 1.2rem 1.3rem;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp .4s ease both;
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      border-radius: var(--r) var(--r) 0 0;
+    }
+
+    .metric-card.c-orange::before {
+      background: var(--accent-2)
+    }
+
+    .metric-card.c-red::before {
+      background: var(--accent)
+    }
+
+    .metric-card.c-teal::before {
+      background: var(--teal)
+    }
+
+    .metric-card.c-blue::before {
+      background: var(--blue)
+    }
+
+    .metric-icon {
+      font-size: 1.5rem;
+      margin-bottom: .5rem;
+      line-height: 1
+    }
+
+    .metric-num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.2rem;
+      color: var(--ink);
+      line-height: 1;
+    }
+
+    .metric-label {
+      font-size: .75rem;
+      color: var(--muted);
+      margin-top: .25rem;
+      font-weight: 500;
+    }
+
+    .metric-delta {
+      font-family: 'DM Mono', monospace;
+      font-size: .68rem;
+      margin-top: .4rem;
+      display: inline-flex;
+      align-items: center;
+      gap: .2rem;
+      padding: .15rem .4rem;
+      border-radius: 3px;
+    }
+
+    .metric-delta.up {
+      background: #dcfce7;
+      color: var(--green)
+    }
+
+    .metric-delta.down {
+      background: #fee2e2;
+      color: var(--accent)
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .metric-card:nth-child(1) {
+      animation-delay: .05s
+    }
+
+    .metric-card:nth-child(2) {
+      animation-delay: .10s
+    }
+
+    .metric-card:nth-child(3) {
+      animation-delay: .15s
+    }
+
+    .metric-card:nth-child(4) {
+      animation-delay: .20s
+    }
+
+    /* ══════════════════════════════════════════════
+   CHARTS ROW
+══════════════════════════════════════════════ */
+    .charts-row {
+      grid-column: 1/-1;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .chart-card {
+      background: var(--chalk);
+      border: 1px solid var(--paper-3);
+      border-radius: var(--r);
+      padding: 1.4rem;
+      box-shadow: var(--shadow);
+    }
+
+    .chart-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1rem;
+      color: var(--ink);
+      margin-bottom: 1.2rem;
+    }
+
+    .chart-sub {
+      font-size: .72rem;
+      color: var(--muted);
+      margin-top: .15rem;
+      font-weight: 400;
+    }
+
+    /* Bar Chart (CSS only) */
+    .bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: .7rem
+    }
+
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: .7rem
+    }
+
+    .bar-label {
+      font-size: .72rem;
+      font-weight: 500;
+      color: var(--ink-3);
+      width: 90px;
+      flex-shrink: 0;
+      line-height: 1.2;
+    }
+
+    .bar-track {
+      flex: 1;
+      height: 10px;
+      background: var(--paper-2);
+      border-radius: 99px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      position: relative;
+      /* animate width via CSS */
+      animation: barGrow .8s cubic-bezier(.4, 0, .2, 1) both;
+      transform-origin: left;
+    }
+
+    @keyframes barGrow {
+      from {
+        width: 0 !important
+      }
+
+      to {
+        /* width set inline */
+      }
+    }
+
+    .bar-fill.b-red {
+      background: var(--accent)
+    }
+
+    .bar-fill.b-orange {
+      background: var(--accent-2)
+    }
+
+    .bar-fill.b-teal {
+      background: var(--teal)
+    }
+
+    .bar-fill.b-blue {
+      background: var(--blue)
+    }
+
+    .bar-fill.b-gold {
+      background: var(--gold)
+    }
+
+    .bar-pct {
+      font-family: 'DM Mono', monospace;
+      font-size: .7rem;
+      color: var(--muted);
+      width: 36px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* Donut Chart (pure CSS) */
+    .donut-wrap {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .donut {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    /* Each donut uses conic-gradient — no JS */
+    .donut-legend {
+      display: flex;
+      flex-direction: column;
+      gap: .45rem;
+      flex: 1
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .72rem;
+      color: var(--ink-3)
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      flex-shrink: 0
+    }
+
+    /* Progress rings - resolution SLA */
+    .sla-list {
+      display: flex;
+      flex-direction: column;
+      gap: .85rem
+    }
+
+    .sla-item {
+      display: flex;
+      flex-direction: column;
+      gap: .3rem
+    }
+
+    .sla-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .sla-name {
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--ink-3)
+    }
+
+    .sla-pct {
+      font-family: 'DM Mono', monospace;
+      font-size: .75rem;
+      font-weight: 500;
+    }
+
+    .sla-track {
+      height: 8px;
+      background: var(--paper-2);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .sla-fill {
+      height: 100%;
+      border-radius: 99px;
+      animation: barGrow .9s ease both;
+    }
+
+    .sla-fill.ok {
+      background: var(--teal)
+    }
+
+    .sla-fill.warn {
+      background: var(--gold)
+    }
+
+    .sla-fill.bad {
+      background: var(--accent)
+    }
+
+    /* ══════════════════════════════════════════════
+   TICKETS TABLE
+══════════════════════════════════════════════ */
+    .table-card {
+      grid-column: 1/-1;
+      background: var(--chalk);
+      border: 1px solid var(--paper-3);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.4rem;
+      border-bottom: 1px solid var(--paper-3);
+      flex-wrap: wrap;
+      gap: .7rem;
+    }
+
+    .table-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.05rem;
+      color: var(--ink);
+    }
+
+    .table-chips {
+      display: flex;
+      gap: .4rem;
+      flex-wrap: wrap
+    }
+
+    .chip {
+      font-family: 'DM Mono', monospace;
+      font-size: .62rem;
+      padding: .2rem .55rem;
+      border-radius: 3px;
+      font-weight: 500;
+      cursor: default;
+    }
+
+    .chip.open {
+      background: #fef3c7;
+      color: #92400e
+    }
+
+    .chip.prog {
+      background: #dbeafe;
+      color: #1e40af
+    }
+
+    .chip.closed {
+      background: #d1fae5;
+      color: #065f46
+    }
+
+    .chip.critic {
+      background: #fee2e2;
+      color: #991b1b
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .8rem
+    }
+
+    thead tr {
+      background: var(--paper)
+    }
+
+    th {
+      padding: .6rem 1rem;
+      text-align: left;
+      font-size: .65rem;
+      font-weight: 600;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--paper-3);
+      font-family: 'DM Mono', monospace;
+    }
+
+    td {
+      padding: .65rem 1rem;
+      border-bottom: 1px solid var(--paper-2);
+      color: var(--ink-3);
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none
+    }
+
+    tbody tr {
+      transition: background .12s
+    }
+
+    tbody tr:hover {
+      background: var(--paper)
+    }
+
+    .tid {
+      font-family: 'DM Mono', monospace;
+      font-size: .72rem;
+      color: var(--accent);
+    }
+
+    .status-pill {
+      display: inline-block;
+      font-size: .62rem;
+      font-weight: 600;
+      padding: .18rem .55rem;
+      border-radius: 3px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .sp-open {
+      background: #fef3c7;
+      color: #92400e
+    }
+
+    .sp-prog {
+      background: #dbeafe;
+      color: #1e40af
+    }
+
+    .sp-closed {
+      background: #d1fae5;
+      color: #065f46
+    }
+
+    .sp-critic {
+      background: #fee2e2;
+      color: #991b1b
+    }
+
+    .prio-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: .4rem;
+    }
+
+    .pd-crit {
+      background: var(--accent);
+      box-shadow: 0 0 4px var(--accent)
+    }
+
+    .pd-alta {
+      background: var(--accent-2)
+    }
+
+    .pd-med {
+      background: var(--gold)
+    }
+
+    .pd-baja {
+      background: var(--teal)
+    }
+
+    /* ══════════════════════════════════════════════
+   FORM SECTION (LEFT)
+══════════════════════════════════════════════ */
+    .form-section {
+      background: var(--chalk);
+      border: 1px solid var(--paper-3);
+      border-radius: var(--r);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      animation: fadeUp .5s ease both;
+      animation-delay: .25s;
+    }
+
+    .form-top {
+      background: var(--ink);
+      padding: 1.1rem 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-top-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.1rem;
+      color: var(--chalk);
+    }
+
+    .form-top-id {
+      font-family: 'DM Mono', monospace;
+      font-size: .68rem;
+      color: var(--muted-2);
+      background: rgba(255, 255, 255, .07);
+      padding: .25rem .6rem;
+      border-radius: 3px;
+    }
+
+    form {
+      padding: 1.4rem
+    }
+
+    .f-row {
+      margin-bottom: 1.1rem
+    }
+
+    .f-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem
+    }
+
+    .f-group {
+      display: flex;
+      flex-direction: column;
+      gap: .35rem
+    }
+
+    label {
+      font-size: .7rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .req {
+      color: var(--accent);
+      margin-left: 1px
+    }
+
+    input[type=text],
+    input[type=email],
+    input[type=tel],
+    select,
+    textarea {
+      width: 100%;
+      background: var(--paper);
+      border: 1.5px solid var(--paper-3);
+      border-radius: var(--r);
+      color: var(--ink);
+      font-family: 'Outfit', sans-serif;
+      font-size: .88rem;
+      padding: .62rem .9rem;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+      -webkit-appearance: none;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--muted-2)
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(232, 68, 26, .12);
+      background: var(--chalk);
+    }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7d8a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right .9rem center;
+      padding-right: 2.2rem;
+      cursor: pointer;
+    }
+
+    select option {
+      background: var(--chalk)
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      line-height: 1.6
+    }
+
+    /* Priority radio buttons (CSS only) */
+    .prio-group {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: .5rem
+    }
+
+    .prio-option input[type=radio] {
+      display: none
+    }
+
+    .prio-option label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .2rem;
+      padding: .5rem .4rem;
+      border: 1.5px solid var(--paper-3);
+      border-radius: var(--r);
+      cursor: pointer;
+      font-size: .68rem;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--muted);
+      transition: all .15s;
+      text-align: center;
+      background: var(--paper);
+    }
+
+    .prio-option label:hover {
+      border-color: var(--paper-2);
+      color: var(--ink)
+    }
+
+    .prio-option input:checked+label {
+      color: var(--chalk)
+    }
+
+    .prio-option.baja input:checked+label {
+      background: var(--teal);
+      border-color: var(--teal)
+    }
+
+    .prio-option.media input:checked+label {
+      background: var(--gold);
+      border-color: var(--gold)
+    }
+
+    .prio-option.alta input:checked+label {
+      background: var(--accent-2);
+      border-color: var(--accent-2)
+    }
+
+    .prio-option.crit input:checked+label {
+      background: var(--accent);
+      border-color: var(--accent)
+    }
+
+    .prio-emoji {
+      font-size: 1rem
+    }
+
+    /* Submit button — mailto */
+    .submit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--paper-3);
+      flex-wrap: wrap;
+    }
+
+    .submit-info {
+      font-size: .72rem;
+      color: var(--muted);
+      line-height: 1.5
+    }
+
+    .submit-info strong {
+      color: var(--ink)
+    }
+
+    .btn-send {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: var(--accent);
+      color: var(--chalk);
+      border: none;
+      border-radius: var(--r);
+      font-family: 'Outfit', sans-serif;
+      font-size: .88rem;
+      font-weight: 700;
+      padding: .72rem 1.7rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+
+    .btn-send:hover {
+      background: #d03616;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(232, 68, 26, .3);
+    }
+
+    .btn-send:active {
+      transform: translateY(0)
+    }
+
+    .btn-arrow {
+      font-size: 1rem;
+      transition: transform .15s
+    }
+
+    .btn-send:hover .btn-arrow {
+      transform: translateX(4px)
+    }
+
+    /* ══════════════════════════════════════════════
+   RIGHT SIDEBAR
+══════════════════════════════════════════════ */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem
+    }
+
+    .side-card {
+      background: var(--chalk);
+      border: 1px solid var(--paper-3);
+      border-radius: var(--r);
+      padding: 1.2rem;
+      box-shadow: var(--shadow);
+      animation: fadeUp .5s ease both;
+    }
+
+    .side-card:nth-child(1) {
+      animation-delay: .1s
+    }
+
+    .side-card:nth-child(2) {
+      animation-delay: .2s
+    }
+
+    .side-card:nth-child(3) {
+      animation-delay: .3s
+    }
+
+    .side-card:nth-child(4) {
+      animation-delay: .4s
+    }
+
+    .side-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: .95rem;
+      color: var(--ink);
+      margin-bottom: .9rem;
+      padding-bottom: .6rem;
+      border-bottom: 1px solid var(--paper-3);
+    }
+
+    /* Contact links */
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: .6rem .7rem;
+      border-radius: var(--r);
+      text-decoration: none;
+      transition: background .12s;
+      margin-bottom: .3rem;
+    }
+
+    .contact-item:last-child {
+      margin-bottom: 0
+    }
+
+    .contact-item:hover {
+      background: var(--paper)
+    }
+
+    .ci-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .ci-email {
+      background: #fef3c7
+    }
+
+    .ci-wa {
+      background: #d1fae5
+    }
+
+    .ci-label {
+      font-size: .62rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .07em
+    }
+
+    .ci-value {
+      font-family: 'DM Mono', monospace;
+      font-size: .75rem;
+      color: var(--ink)
+    }
+
+    .contact-item:hover .ci-value {
+      color: var(--accent)
+    }
+
+    /* SLA side */
+    .sla-side {
+      display: flex;
+      flex-direction: column;
+      gap: .75rem
+    }
+
+    .sla-side-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: .5rem;
+      font-size: .78rem
+    }
+
+    .sla-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: .68rem;
+      font-weight: 500;
+      padding: .15rem .45rem;
+      border-radius: 3px;
+    }
+
+    .sb-green {
+      background: #d1fae5;
+      color: #065f46
+    }
+
+    .sb-yellow {
+      background: #fef3c7;
+      color: #92400e
+    }
+
+    .sb-red {
+      background: #fee2e2;
+      color: #991b1b
+    }
+
+    /* Agentes disponibles */
+    .agents-list {
+      display: flex;
+      flex-direction: column;
+      gap: .6rem
+    }
+
+    .agent-row {
+      display: flex;
+      align-items: center;
+      gap: .65rem
+    }
+
+    .agent-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--chalk);
+      flex-shrink: 0;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .av-1 {
+      background: var(--teal)
+    }
+
+    .av-2 {
+      background: var(--blue)
+    }
+
+    .av-3 {
+      background: var(--accent-2)
+    }
+
+    .av-4 {
+      background: var(--accent)
+    }
+
+    .agent-info {
+      flex: 1;
+      min-width: 0
+    }
+
+    .agent-name {
+      font-size: .78rem;
+      font-weight: 500;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .agent-role {
+      font-size: .65rem;
+      color: var(--muted)
+    }
+
+    .agent-status {
+      font-family: 'DM Mono', monospace;
+      font-size: .62rem;
+      padding: .12rem .4rem;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .as-free {
+      background: #d1fae5;
+      color: #065f46
+    }
+
+    .as-busy {
+      background: #fef3c7;
+      color: #92400e
+    }
+
+    /* Anuncio tip */
+    .tip-card {
+      background: linear-gradient(135deg, var(--ink-2), var(--ink-3));
+      border-color: var(--ink-3);
+      color: var(--chalk);
+    }
+
+    .tip-card .side-title {
+      color: var(--paper-3);
+      border-bottom-color: rgba(255, 255, 255, .1);
+    }
+
+    .tip-text {
+      font-size: .78rem;
+      color: var(--muted-2);
+      line-height: 1.6
+    }
+
+    .tip-text strong {
+      color: var(--accent-2)
+    }
+
+    /* ══════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════ */
+    .footer {
+      background: var(--ink);
+      color: var(--muted-2);
+      text-align: center;
+      padding: 1.2rem 2rem;
+      font-family: 'DM Mono', monospace;
+      font-size: .65rem;
+      letter-spacing: .06em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+
+    .footer a {
+      color: var(--accent);
+      text-decoration: none
+    }
+
+    .footer a:hover {
+      text-decoration: underline
+    }
+
+    /* ══════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════ */
+    @media(max-width:1100px) {
+      .charts-row {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .charts-row .chart-card:last-child {
+        grid-column: 1/-1
+      }
+    }
+
+    @media(max-width:900px) {
+      .page-body {
+        grid-template-columns: 1fr
+      }
+
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .charts-row {
+        grid-template-columns: 1fr
+      }
+
+      .sidebar {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    @media(max-width:640px) {
+      .metrics-grid {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .hero-strip {
+        padding: 1.5rem 1rem
+      }
+
+      .header {
+        padding: .7rem 1rem
+      }
+
+      .page-body {
+        padding: 1rem .75rem 3rem
+      }
+
+      .f-2col {
+        grid-template-columns: 1fr
+      }
+
+      .sidebar {
+        grid-template-columns: 1fr
+      }
+
+      .prio-group {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .topbar {
+        padding: .4rem 1rem
+      }
+
+      .footer {
+        flex-direction: column;
+        text-align: center
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══ TOPBAR ══ -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-dot"></div>
+      <span>SISTEMA EN LÍNEA — Mesa de Servicio IT</span>
+      <span style="color:var(--muted-2)">|</span>
+      <span>Soporte: <strong style="color:#e0ddd6">ramirze89@gmail.com</strong></span>
+    </div>
+    <div class="topbar-right">
+      <span>📍 El Salvador</span>
+      <span>🕐 <span id="clock">--:--</span></span>
+    </div>
+  </div>
+
+  <!-- ══ HEADER ══ -->
+  <header class="header">
+    <a href="#" class="brand">
+      <div class="brand-icon">🖥</div>
+      <div class="brand-name">Mesa<span>Desk</span></div>
+    </a>
+    <nav class="header-nav">
+      <a href="#dashboard" class="nav-btn active">Dashboard</a>
+      <a href="#tickets" class="nav-btn">Tickets</a>
+      <a href="#nuevo" class="nav-btn">+ Nuevo Ticket</a>
+    </nav>
+  </header>
+
+  <!-- ══ HERO ══ -->
+  <section class="hero-strip">
+    <div class="hero-text">
+      <p class="hero-eyebrow">// Mesa de Servicio IT</p>
+      <h1 class="hero-title">Panel de <em>Control</em><br />y Soporte Técnico</h1>
+      <p class="hero-sub">Gestión centralizada de incidentes, solicitudes y soporte. Monitoreo en tiempo real del estado
+        operativo.</p>
+    </div>
+    <div class="hero-kpis">
+      <div class="kpi-card">
+        <div class="kpi-value">47<span>%</span></div>
+        <div class="kpi-label">Resueltos hoy</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value">1.8<span>h</span></div>
+        <div class="kpi-label">Tiempo prom.</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value">94<span>%</span></div>
+        <div class="kpi-label">SLA cumplido</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value">12</div>
+        <div class="kpi-label">Abiertos</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PAGE BODY ══ -->
+  <div class="page-body" id="dashboard">
+
+    <!-- ══ METRICS CARDS ══ -->
+    <div class="metrics-grid">
+      <div class="metric-card c-orange">
+        <div class="metric-icon">📋</div>
+        <div class="metric-num">47</div>
+        <div class="metric-label">Tickets este mes</div>
+        <div class="metric-delta up">↑ +12% vs mes anterior</div>
+      </div>
+      <div class="metric-card c-red">
+        <div class="metric-icon">🔥</div>
+        <div class="metric-num">5</div>
+        <div class="metric-label">Críticos abiertos</div>
+        <div class="metric-delta down">↑ +2 desde ayer</div>
+      </div>
+      <div class="metric-card c-teal">
+        <div class="metric-icon">✅</div>
+        <div class="metric-num">38</div>
+        <div class="metric-label">Resueltos este mes</div>
+        <div class="metric-delta up">↑ 94% tasa de éxito</div>
+      </div>
+      <div class="metric-card c-blue">
+        <div class="metric-icon">⏱</div>
+        <div class="metric-num">1.8<span
+            style="font-size:1rem;font-family:'DM Mono',monospace;color:var(--muted)">h</span></div>
+        <div class="metric-label">Tiempo promedio de respuesta</div>
+        <div class="metric-delta up">↓ -18% vs semana pasada</div>
+      </div>
+    </div>
+
+    <!-- ══ CHARTS ROW ══ -->
+    <div class="charts-row">
+
+      <!-- Categorías -->
+      <div class="chart-card">
+        <div class="chart-title">Tickets por Categoría <div class="chart-sub">Distribución del mes actual</div>
+        </div>
+        <div class="bar-chart">
+          <div class="bar-row">
+            <span class="bar-label">Software</span>
+            <div class="bar-track">
+              <div class="bar-fill b-blue" style="width:72%"></div>
+            </div>
+            <span class="bar-pct">72%</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Hardware</span>
+            <div class="bar-track">
+              <div class="bar-fill b-orange" style="width:55%"></div>
+            </div>
+            <span class="bar-pct">55%</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Red / VPN</span>
+            <div class="bar-track">
+              <div class="bar-fill b-teal" style="width:40%"></div>
+            </div>
+            <span class="bar-pct">40%</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Accesos</span>
+            <div class="bar-track">
+              <div class="bar-fill b-gold" style="width:28%"></div>
+            </div>
+            <span class="bar-pct">28%</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Correo</span>
+            <div class="bar-track">
+              <div class="bar-fill b-red" style="width:18%"></div>
+            </div>
+            <span class="bar-pct">18%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Donut: estado -->
+      <div class="chart-card">
+        <div class="chart-title">Estado de Tickets <div class="chart-sub">Snapshot actual</div>
+        </div>
+        <div class="donut-wrap">
+          <div class="donut"
+            style="background:conic-gradient(var(--teal) 0% 47%,var(--blue) 47% 72%,var(--accent-2) 72% 85%,var(--accent) 85% 100%);">
+          </div>
+          <div class="donut-legend">
+            <div class="legend-item"><span class="legend-dot" style="background:var(--teal)"></span>Resueltos —
+              <strong>47%</strong></div>
+            <div class="legend-item"><span class="legend-dot" style="background:var(--blue)"></span>En progreso —
+              <strong>25%</strong></div>
+            <div class="legend-item"><span class="legend-dot" style="background:var(--accent-2)"></span>Abiertos —
+              <strong>13%</strong></div>
+            <div class="legend-item"><span class="legend-dot" style="background:var(--accent)"></span>Críticos —
+              <strong>15%</strong></div>
+          </div>
+        </div>
+        <div
+          style="margin-top:1rem;font-size:.7rem;color:var(--muted);font-family:'DM Mono',monospace;text-align:center">
+          Total: 47 tickets / 30 días</div>
+      </div>
+
+      <!-- SLA compliance -->
+      <div class="chart-card">
+        <div class="chart-title">Cumplimiento SLA <div class="chart-sub">Por nivel de prioridad</div>
+        </div>
+        <div class="sla-list">
+          <div class="sla-item">
+            <div class="sla-head">
+              <span class="sla-name">🚨 Crítica (&lt;30 min)</span>
+              <span class="sla-pct" style="color:var(--teal)">88%</span>
+            </div>
+            <div class="sla-track">
+              <div class="sla-fill ok" style="width:88%"></div>
+            </div>
+          </div>
+          <div class="sla-item">
+            <div class="sla-head">
+              <span class="sla-name">🔴 Alta (&lt;2 horas)</span>
+              <span class="sla-pct" style="color:var(--teal)">94%</span>
+            </div>
+            <div class="sla-track">
+              <div class="sla-fill ok" style="width:94%"></div>
+            </div>
+          </div>
+          <div class="sla-item">
+            <div class="sla-head">
+              <span class="sla-name">🟡 Media (&lt;8 horas)</span>
+              <span class="sla-pct" style="color:var(--gold)">76%</span>
+            </div>
+            <div class="sla-track">
+              <div class="sla-fill warn" style="width:76%"></div>
+            </div>
+          </div>
+          <div class="sla-item">
+            <div class="sla-head">
+              <span class="sla-name">🟢 Baja (&lt;24 horas)</span>
+              <span class="sla-pct" style="color:var(--teal)">98%</span>
+            </div>
+            <div class="sla-track">
+              <div class="sla-fill ok" style="width:98%"></div>
+            </div>
+          </div>
+          <div class="sla-item" style="border-top:1px solid var(--paper-3);padding-top:.75rem">
+            <div class="sla-head">
+              <span class="sla-name" style="font-size:.82rem;font-weight:700">Promedio global</span>
+              <span class="sla-pct" style="color:var(--teal);font-size:.85rem;font-weight:700">94%</span>
+            </div>
+            <div class="sla-track">
+              <div class="sla-fill ok" style="width:94%;background:linear-gradient(90deg,var(--teal),var(--blue))">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /charts-row -->
+
+    <!-- ══ TICKETS TABLE ══ -->
+    <div class="table-card" id="tickets">
+      <div class="table-header">
+        <div class="table-title">🗂 Tickets Recientes</div>
+        <div class="table-chips">
+          <span class="chip open">12 Abiertos</span>
+          <span class="chip prog">8 En Progreso</span>
+          <span class="chip closed">38 Cerrados</span>
+          <span class="chip critic">5 Críticos</span>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Asunto</th>
+            <th>Solicitante</th>
+            <th>Categoría</th>
+            <th>Prioridad</th>
+            <th>Estado</th>
+            <th>Asignado</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="tid">TKT-0047</td>
+            <td>VPN no conecta desde oficina</td>
+            <td>M. García</td>
+            <td>Red / Conectividad</td>
+            <td><span class="prio-dot pd-crit"></span>Crítica</td>
+            <td><span class="status-pill sp-prog">En Progreso</span></td>
+            <td>R. Torres</td>
+            <td class="mono" style="font-size:.7rem;color:var(--muted)">15/03/26 08:14</td>
+          </tr>
+          <tr>
+            <td class="tid">TKT-0046</td>
+            <td>Impresora HP 3er piso sin papel</td>
+            <td>L. Pérez</td>
+            <td>Periféricos</td>
+            <td><span class="prio-dot pd-baja"></span>Baja</td>
+            <td><span class="status-pill sp-closed">Resuelto</span></td>
+            <td>K. Flores</td>
+            <td class="mono" style="font-size:.7rem;color:var(--muted)">14/03/26 16:32</td>
+          </tr>
+          <tr>
+            <td class="tid">TKT-0045</td>
+            <td>Error al abrir Excel — licencia</td>
+            <td>A. Martínez</td>
+            <td>Software</td>
+            <td><span class="prio-dot pd-alta"></span>Alta</td>
+            <td><span class="status-pill sp-open">Abierto</span></td>
+            <td>—</td>
+            <td class="mono" style="font-size:.7rem;color:var(--muted)">14/03/26 14:55</td>
+          </tr>
+          <tr>
+            <td class="tid">TKT-0044</td>
+            <td>Pantalla parpadea en laptop</td>
+            <td>C. López</td>
+            <td>Hardware</td>
+            <td><span class="prio-dot pd-med"></span>Media</td>
+            <td><span class="status-pill sp-prog">En Progreso</span></td>
+            <td>R. Torres</td>
+            <td class="mono" style="font-size:.7rem;color:var(--muted)">13/03/26 09:10</td>
+          </tr>
+          <tr>
+            <td class="tid">TKT-0043</td>
+            <td>Correo corporativo bloqueado</td>
+            <td>J. Salazar</td>
+            <td>Correo</td>
+            <td><span class="prio-dot pd-crit"></span>Crítica</td>
+            <td><span class="status-pill sp-critic">Crítico</span></td>
+            <td>K. Flores</td>
+            <td class="mono" style="font-size:.7rem;color:var(--muted)">13/03/26 07:45</td>
+          </tr>
+          <tr>
+            <td class="tid">TKT-0042</td>
+            <td>Solicitud acceso carpeta red</td>
+            <td>P. Rivera</td>
+            <td>Accesos</td>
+            <td><span class="prio-dot pd-baja"></span>Baja</td>
+            <td><span class="status-pill sp-closed">Resuelto</span></td>
+            <td>R. Torres</td>
+            <td class="mono" style="font-size:.7rem;color:var(--muted)">12/03/26 11:20</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ══ FORM + SIDEBAR GRID ══ -->
+    <!-- FORM (left) -->
+    <div class="form-section" id="nuevo">
+      <div class="form-top">
+        <span class="form-top-title">📬 Nuevo Ticket de Soporte</span>
+        <span class="form-top-id">ramirze89@gmail.com</span>
+      </div>
+
+      <!-- ACTION = mailto: envío funcional sin JS -->
+      <form method="get" action="mailto:ramirze89@gmail.com" enctype="text/plain">
+
+        <div class="f-row f-2col">
+          <div class="f-group">
+            <label for="nombre">Nombre completo <span class="req">*</span></label>
+            <input type="text" id="nombre" name="Nombre" placeholder="Ej. María López" required />
+          </div>
+          <div class="f-group">
+            <label for="correo">Correo electrónico <span class="req">*</span></label>
+            <input type="email" id="correo" name="Email-solicitante" placeholder="usuario@empresa.com" required />
+          </div>
+        </div>
+
+        <div class="f-row f-2col">
+          <div class="f-group">
+            <label for="depto">Departamento <span class="req">*</span></label>
+            <select id="depto" name="Departamento" required>
+              <option value="">— Seleccionar —</option>
+              <option>Tecnología</option>
+              <option>Finanzas</option>
+              <option>Recursos Humanos</option>
+              <option>Operaciones</option>
+              <option>Ventas</option>
+              <option>Marketing</option>
+              <option>Legal</option>
+              <option>Gerencia</option>
+            </select>
+          </div>
+          <div class="f-group">
+            <label for="tel">Teléfono / Extensión</label>
+            <input type="tel" id="tel" name="Telefono" placeholder="+503 XXXX-XXXX" />
+          </div>
+        </div>
+
+        <div class="f-row f-2col">
+          <div class="f-group">
+            <label for="cat">Categoría <span class="req">*</span></label>
+            <select id="cat" name="Categoria" required>
+              <option value="">— Seleccionar —</option>
+              <option>Incidente de Hardware</option>
+              <option>Incidente de Software</option>
+              <option>Acceso / Contraseñas</option>
+              <option>Red / Conectividad</option>
+              <option>Correo Electrónico</option>
+              <option>Impresoras / Periféricos</option>
+              <option>Solicitud de Instalación</option>
+              <option>Seguridad Informática</option>
+              <option>ERP / Sistema Interno</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="f-group">
+            <label>Prioridad <span class="req">*</span></label>
+            <div class="prio-group">
+              <div class="prio-option baja">
+                <input type="radio" name="Prioridad" id="p-baja" value="Baja" required />
+                <label for="p-baja"><span class="prio-emoji">🟢</span>Baja</label>
+              </div>
+              <div class="prio-option media">
+                <input type="radio" name="Prioridad" id="p-media" value="Media" />
+                <label for="p-media"><span class="prio-emoji">🟡</span>Media</label>
+              </div>
+              <div class="prio-option alta">
+                <input type="radio" name="Prioridad" id="p-alta" value="Alta" />
+                <label for="p-alta"><span class="prio-emoji">🔴</span>Alta</label>
+              </div>
+              <div class="prio-option crit">
+                <input type="radio" name="Prioridad" id="p-crit" value="Critica" />
+                <label for="p-crit"><span class="prio-emoji">🚨</span>Crítica</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="f-row">
+          <div class="f-group">
+            <label for="asunto">Asunto del ticket <span class="req">*</span></label>
+            <input type="text" id="asunto" name="Asunto" placeholder="Descripción corta del problema" required
+              maxlength="100" />
+          </div>
+        </div>
+
+        <div class="f-row">
+          <div class="f-group">
+            <label for="desc">Descripción detallada <span class="req">*</span></label>
+            <textarea id="desc" name="Descripcion"
+              placeholder="Explica el problema con detalle: ¿Qué ocurrió? ¿Cuándo? ¿Qué equipo está afectado?" required
+              maxlength="1000"></textarea>
+          </div>
+        </div>
+
+        <div class="submit-row">
+          <div class="submit-info">
+            Al enviar, se abrirá tu cliente de correo<br />
+            con el ticket dirigido a <strong>ramirze89@gmail.com</strong>
+          </div>
+          <button type="submit" class="btn-send">
+            Enviar Ticket
+            <span class="btn-arrow">→</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- SIDEBAR (right) -->
+    <aside class="sidebar">
+
+      <div class="side-card">
+        <div class="side-title">📬 Contacto Directo</div>
+        <a href="mailto:ramirze89@gmail.com" class="contact-item">
+          <div class="ci-icon ci-email">✉️</div>
+          <div>
+            <div class="ci-label">Email soporte</div>
+            <div class="ci-value">ramirze89@gmail.com</div>
+          </div>
+        </a>
+        <a href="https://wa.me/50370687308" target="_blank" class="contact-item">
+          <div class="ci-icon ci-wa">💬</div>
+          <div>
+            <div class="ci-label">WhatsApp</div>
+            <div class="ci-value">+503 7068-7308</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="side-card">
+        <div class="side-title">⏱ SLA por Prioridad</div>
+        <div class="sla-side">
+          <div class="sla-side-item">
+            <span>🚨 Crítica</span>
+            <div style="display:flex;align-items:center;gap:.4rem">
+              <span style="font-size:.72rem;color:var(--muted)">&lt; 30 min</span>
+              <span class="sla-badge sb-red">URGENTE</span>
+            </div>
+          </div>
+          <div class="sla-side-item">
+            <span>🔴 Alta</span>
+            <div style="display:flex;align-items:center;gap:.4rem">
+              <span style="font-size:.72rem;color:var(--muted)">&lt; 2 horas</span>
+              <span class="sla-badge sb-yellow">PRIORIDAD</span>
+            </div>
+          </div>
+          <div class="sla-side-item">
+            <span>🟡 Media</span>
+            <div style="display:flex;align-items:center;gap:.4rem">
+              <span style="font-size:.72rem;color:var(--muted)">&lt; 8 horas</span>
+              <span class="sla-badge sb-green">NORMAL</span>
+            </div>
+          </div>
+          <div class="sla-side-item">
+            <span>🟢 Baja</span>
+            <div style="display:flex;align-items:center;gap:.4rem">
+              <span style="font-size:.72rem;color:var(--muted)">&lt; 24 horas</span>
+              <span class="sla-badge sb-green">NORMAL</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-card">
+        <div class="side-title">👥 Equipo de Soporte</div>
+        <div class="agents-list">
+          <div class="agent-row">
+            <div class="agent-avatar av-1">RT</div>
+            <div class="agent-info">
+              <div class="agent-name">R. Torres</div>
+              <div class="agent-role">Soporte N1</div>
+            </div>
+            <span class="agent-status as-free">Libre</span>
+          </div>
+          <div class="agent-row">
+            <div class="agent-avatar av-2">KF</div>
+            <div class="agent-info">
+              <div class="agent-name">K. Flores</div>
+              <div class="agent-role">Soporte N2</div>
+            </div>
+            <span class="agent-status as-busy">Ocupado</span>
+          </div>
+          <div class="agent-row">
+            <div class="agent-avatar av-3">MR</div>
+            <div class="agent-info">
+              <div class="agent-name">M. Ramírez</div>
+              <div class="agent-role">Infraestructura</div>
+            </div>
+            <span class="agent-status as-free">Libre</span>
+          </div>
+          <div class="agent-row">
+            <div class="agent-avatar av-4">JS</div>
+            <div class="agent-info">
+              <div class="agent-name">J. Sánchez</div>
+              <div class="agent-role">Seguridad IT</div>
+            </div>
+            <span class="agent-status as-busy">Ocupado</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-card tip-card">
+        <div class="side-title">💡 Tip del día</div>
+        <p class="tip-text">Incluye siempre el <strong>nombre del equipo afectado</strong> y una <strong>captura de
+            pantalla</strong> del error. Reduce el tiempo de resolución hasta un <strong>40%</strong>.</p>
+      </div>
+
+    </aside>
+
+  </div><!-- /page-body -->
+
+  <footer class="footer">
+    <span>© 2026 Mesa de Servicio IT — Todos los derechos reservados</span>
+    <span>Soporte: <a href="mailto:ramirze89@gmail.com">ramirze89@gmail.com</a> &nbsp;·&nbsp; WhatsApp: <a
+        href="https://wa.me/50370687308">+503 7068-7308</a></span>
+  </footer>
+
+  <!-- Reloj simple — único JS en toda la página (inline, mínimo) -->
+  <script>
+    (function () {
+      var c = document.getElementById('clock');
+      if (c) {
+        function t() { var d = new Date(); c.textContent = d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0'); }
+        t(); setInterval(t, 30000);
+      }
+    })();
+  </script>
+
+</body>
+
+</html>
